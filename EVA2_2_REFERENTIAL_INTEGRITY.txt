@@ -1,0 +1,320 @@
+MySQL Shell 8.0.31
+
+Copyright (c) 2016, 2022, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Please provide the password for 'root@localhost': ****
+Save password for 'root@localhost'? [Y]es/[N]o/Ne[v]er (default No): n
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 12
+Server version: 8.0.31 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > \use evaluacion_2
+Default schema set to `evaluacion_2`.
+Fetching global names, object names from `evaluacion_2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show tables
+                                             -> ;
++------------------------+
+| Tables_in_evaluacion_2 |
++------------------------+
+| detalle_factura        |
+| factura                |
++------------------------+
+2 rows in set (0.0029 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show create table factura;
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table   | Create Table
+                                                                           |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| factura | CREATE TABLE `factura` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_cliente` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0053 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show create table detalle_factura;
++-----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table           | Create Table
+
+
+                            |
++-----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| detalle_factura | CREATE TABLE `detalle_factura` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_factura` int DEFAULT NULL,
+  `id_producto` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_factura` (`id_factura`),
+  CONSTRAINT `detalle_factura_ibfk_1` FOREIGN KEY (`id_factura`) REFERENCES `factura` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++-----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0012 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > create table maestra(id int auto_increment key, dato varchar(20));
+Query OK, 0 rows affected (0.0563 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > create table detalle(id int auto_increment key, id maestro int, dato varchar(20), foreign key(id_maestro) references maestra(id) on delete set null on update no action);
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'maestro int, dato varchar(20), foreign key(id_maestro) references maestra(id) on' at line 1
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > create table detalle(id int auto_increment key, id_maestro int, dato varchar(20), foreign key(id_maestro) references maestra(id) on delete set null on update no action);
+Query OK, 0 rows affected (0.0236 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show tables
+                                             -> ;
++------------------------+
+| Tables_in_evaluacion_2 |
++------------------------+
+| detalle                |
+| detalle_factura        |
+| factura                |
+| maestra                |
++------------------------+
+4 rows in set (0.0023 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > desc maestra;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int         | NO   | PRI | NULL    | auto_increment |
+| dato  | varchar(20) | YES  |     | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.0027 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > desc detalle;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id         | int         | NO   | PRI | NULL    | auto_increment |
+| id_maestro | int         | YES  | MUL | NULL    |                |
+| dato       | varchar(20) | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+3 rows in set (0.0026 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show create table maestra;
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table   | Create Table
+                                                               |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| maestra | CREATE TABLE `maestra` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dato` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0022 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show create table detalle;
++---------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table   | Create Table
+
+                                                                                                       |
++---------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| detalle | CREATE TABLE `detalle` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_maestro` int DEFAULT NULL,
+  `dato` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_maestro` (`id_maestro`),
+  CONSTRAINT `detalle_ibfk_1` FOREIGN KEY (`id_maestro`) REFERENCES `maestra` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++---------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0019 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestro(nombre) value(nombre1);
+ERROR: 1146 (42S02): Table 'evaluacion_2.maestro' doesn't exist
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(nombre) value(nombre1);
+ERROR: 1054 (42S22): Unknown column 'nombre' in 'field list'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(dato) value(nombre1);
+ERROR: 1054 (42S22): Unknown column 'nombre1' in 'field list'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(dato) value(nombre1);
+ERROR: 1054 (42S22): Unknown column 'nombre1' in 'field list'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(nombre1) value(dato);
+ERROR: 1054 (42S22): Unknown column 'nombre1' in 'field list'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(dato) values(nombre1);
+ERROR: 1054 (42S22): Unknown column 'nombre1' in 'field list'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(dato) values('nombre1');
+Query OK, 1 row affected (0.0080 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(dato) values('nombre2');
+Query OK, 1 row affected (0.0069 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(dato) values('nombre3');
+Query OK, 1 row affected (0.0027 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into maestra(dato) values('nombre4');
+Query OK, 1 row affected (0.0055 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into detalle(id_maestro, dato) values('1','dato1');
+Query OK, 1 row affected (0.0064 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into detalle(id_maestro, dato) values('1','dato2');
+Query OK, 1 row affected (0.0060 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into detalle(id_maestro, dato) values('2','dato3');
+Query OK, 1 row affected (0.0018 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into detalle(id_maestro, dato) values('2','dato4');
+Query OK, 1 row affected (0.0058 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into detalle(id_maestro, dato) values('3','dato5');
+Query OK, 1 row affected (0.0059 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into detalle(id_maestro, dato) values('4','dato6');
+Query OK, 1 row affected (0.0058 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from detalle;
++----+------------+-------+
+| id | id_maestro | dato  |
++----+------------+-------+
+|  1 |          1 | dato1 |
+|  2 |          1 | dato2 |
+|  3 |          2 | dato3 |
+|  4 |          2 | dato4 |
+|  5 |          3 | dato5 |
+|  6 |          4 | dato6 |
++----+------------+-------+
+6 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from maestra;
++----+---------+
+| id | dato    |
++----+---------+
+|  1 | nombre1 |
+|  2 | nombre2 |
+|  3 | nombre3 |
+|  4 | nombre4 |
++----+---------+
+4 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > delete from maestra where id = 1;
+Query OK, 1 row affected (0.0060 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from maestra;
++----+---------+
+| id | dato    |
++----+---------+
+|  2 | nombre2 |
+|  3 | nombre3 |
+|  4 | nombre4 |
++----+---------+
+3 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from detalle;
++----+------------+-------+
+| id | id_maestro | dato  |
++----+------------+-------+
+|  1 |       NULL | dato1 |
+|  2 |       NULL | dato2 |
+|  3 |          2 | dato3 |
+|  4 |          2 | dato4 |
+|  5 |          3 | dato5 |
+|  6 |          4 | dato6 |
++----+------------+-------+
+6 rows in set (0.0005 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > update maestra set id = 6 where id = 2;
+ERROR: 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`evaluacion_2`.`detalle`, CONSTRAINT `detalle_ibfk_1` FOREIGN KEY (`id_maestro`) REFERENCES `maestra` (`id`) ON DELETE SET NULL)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > create table contacts(contact_id int auto_increment key, name varchar(20) not null, company varchar(30), adress varchar(50), zipcode varchar(8));
+Query OK, 0 rows affected (0.0187 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > create table phones(phone_id int auto_increment key, contact_id int, phone varchar(10), foreign key(contact_id) references contracts(contact_id) on delete cascade on update cascade);
+ERROR: 1824 (HY000): Failed to open the referenced table 'contracts'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > create table phones(phone_id int auto_increment key, contact_id int, phone varchar(10), foreign key(contact_id) references contacts(contact_id) on delete cascade on update cascade);
+Query OK, 0 rows affected (0.0230 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into contacts(name, company, adress, zipcode) values('Joe','ABC','123','12345');
+Query OK, 1 row affected (0.0075 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into contacts(name, company, adress, zipcode) values('Jane','XYZ','456','14454');
+Query OK, 1 row affected (0.0059 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into contacts(name, company, adress, zipcode) values('Chris','PDQ','789','14423');
+Query OK, 1 row affected (0.0060 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into phones(contact_id, phone) values(1,5532);
+Query OK, 1 row affected (0.0041 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from phones
+                                             -> ;
++----------+------------+-------+
+| phone_id | contact_id | phone |
++----------+------------+-------+
+|        1 |          1 | 5532  |
++----------+------------+-------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from contacts;
++------------+-------+---------+--------+---------+
+| contact_id | name  | company | adress | zipcode |
++------------+-------+---------+--------+---------+
+|          1 | Joe   | ABC     | 123    | 12345   |
+|          2 | Jane  | XYZ     | 456    | 14454   |
+|          3 | Chris | PDQ     | 789    | 14423   |
++------------+-------+---------+--------+---------+
+3 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into phones(contact_id, phone) values(1,2234);
+Query OK, 1 row affected (0.0059 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into phones(contact_id, phone) values(1,3211);
+Query OK, 1 row affected (0.0059 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into phones(contact_id, phone) values(2,3421);
+Query OK, 1 row affected (0.0018 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into phones(contact_id, phone) values(3,2341);
+Query OK, 1 row affected (0.0056 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > insert into phones(contact_id, phone) values(3,6655);
+Query OK, 1 row affected (0.0058 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from contacts;
++------------+-------+---------+--------+---------+
+| contact_id | name  | company | adress | zipcode |
++------------+-------+---------+--------+---------+
+|          1 | Joe   | ABC     | 123    | 12345   |
+|          2 | Jane  | XYZ     | 456    | 14454   |
+|          3 | Chris | PDQ     | 789    | 14423   |
++------------+-------+---------+--------+---------+
+3 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from phones ;
++----------+------------+-------+
+| phone_id | contact_id | phone |
++----------+------------+-------+
+|        1 |          1 | 5532  |
+|        2 |          1 | 2234  |
+|        3 |          1 | 3211  |
+|        4 |          2 | 3421  |
+|        5 |          3 | 2341  |
+|        6 |          3 | 6655  |
++----------+------------+-------+
+6 rows in set (0.0005 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > shoe create table contacts;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'shoe create table contacts' at line 1
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show create table contacts;
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table
+
+                                                                         |
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| contacts | CREATE TABLE `contacts` (
+  `contact_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `company` varchar(30) DEFAULT NULL,
+  `adress` varchar(50) DEFAULT NULL,
+  `zipcode` varchar(8) DEFAULT NULL,
+  PRIMARY KEY (`contact_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0012 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > show create table phones;
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table  | Create Table
+
+
+                       |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| phones | CREATE TABLE `phones` (
+  `phone_id` int NOT NULL AUTO_INCREMENT,
+  `contact_id` int DEFAULT NULL,
+  `phone` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`phone_id`),
+  KEY `contact_id` (`contact_id`),
+  CONSTRAINT `phones_ibfk_1` FOREIGN KEY (`contact_id`) REFERENCES `contacts` (`contact_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++--------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > update contacts set id = 2 where id = 1;
+ERROR: 1054 (42S22): Unknown column 'id' in 'where clause'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > update contacts set contatc_id = 2 where phone_id = 1;
+ERROR: 1054 (42S22): Unknown column 'phone_id' in 'where clause'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > update phones set contatc_id = 2 where phone_id = 1;
+ERROR: 1054 (42S22): Unknown column 'contatc_id' in 'field list'
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > update phones set contact_id = 2 where phone_id = 1;
+Query OK, 1 row affected (0.0018 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > select * from phones;
++----------+------------+-------+
+| phone_id | contact_id | phone |
++----------+------------+-------+
+|        1 |          2 | 5532  |
+|        2 |          1 | 2234  |
+|        3 |          1 | 3211  |
+|        4 |          2 | 3421  |
+|        5 |          3 | 2341  |
+|        6 |          3 | 6655  |
++----------+------------+-------+
+6 rows in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  evaluacion_2  SQL > \disconnect
+ MySQL  SQL >
